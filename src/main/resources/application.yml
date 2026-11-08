@@ -1,0 +1,44 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: price-parser
+  servlet:
+    encoding:
+      # Явный charset в ответах: без него Windows PowerShell искажает кириллицу в JSON
+      force: true
+  datasource:
+    url: jdbc:h2:mem:pricedb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+parser:
+  # Размер кастомного пула и длина очереди задач
+  pool-size: 8
+  queue-capacity: 200
+  # Сколько страниц одного сайта можно скачивать одновременно
+  max-concurrent-per-host: 4
+  # Расписание
+  schedule-initial-delay: 2s
+  schedule-fixed-delay: 60s
+  # Файл, в который демон-поток пишет результаты
+  results-file: data/parse-results.jsonl
+  # Таймауты HTTP и предельное время ожидания одной задачи
+  connect-timeout: 5s
+  read-timeout: 10s
+  task-timeout: 120s
+  max-page-size-bytes: 5242880
+  user-agent: "price-parser-homework/1.0"
+  # Добавлять при старте страницы встроенного демо-магазина
+  seed-demo-urls: true
